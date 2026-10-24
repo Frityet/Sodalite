@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Sodalite</AssemblyName>
+    <RootNamespace>Sodalite</RootNamespace>
+    <DefineConstants>$(DefineConstants);NATIVEH3VR</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Version>1.5.1</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="*.cs" />
+    <Compile Include="../Sodalite/src/**/*.cs" Exclude="../Sodalite/src/Sodalite.cs;../Sodalite/src/Api/Game.cs;../Sodalite/src/Api/Mods.cs;../Sodalite/src/ModPanel/**/*.cs" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Lib.Harmony" Version="2.4.3" />
+    <Reference Include="$(UnityEngineManaged)/*.dll" Private="false" />
+    <Reference Include="$(NativeH3VRManaged)/NativeH3VR.*.dll" Private="false" />
+    <Reference Include="$(NativeH3VRManaged)/Valve.Newtonsoft.Json.dll" Private="false" />
+    <Reference Include="$(NativeH3VRManaged)/UnityEngine.UI.dll" Private="false" />
+  </ItemGroup>
+  <Target Name="CheckLocalReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(NativeH3VRManaged)/NativeH3VR.Game.dll')" Text="Set NativeH3VRManaged to your converted player's Managed directory." />
+    <Error Condition="!Exists('$(UnityEngineManaged)/UnityEngine.CoreModule.dll')" Text="Set UnityEngineManaged to Unity 2021.3.45f2 Contents/Managed/UnityEngine." />
+  </Target>
+</Project>

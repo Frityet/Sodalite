@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FistVR;
@@ -11,6 +11,15 @@ namespace Sodalite.Api;
 
 public abstract class WristMenuSectionProxy
 {
+    private static FVRViveHand GetCurrentHand()
+    {
+#if NATIVEH3VR
+        return WristMenuAPI.Instance2!.GetCurrentHand();
+#else
+        return WristMenuAPI.Instance2!.m_currentHand;
+#endif
+    }
+
 	private FVRWristMenuSection? _section;
 	private readonly ObservableHashSet<WristMenuButton> _buttonHashSet = new();
 	private readonly Dictionary<GameObject, WristMenuButton> _existingButtons = new();
@@ -90,7 +99,7 @@ public abstract class WristMenuSectionProxy
 		{
 			// Play a beep and call the onclick handler
 			SM.PlayGlobalUISound(SM.GlobalUISound.Beep, buttonTransform.position);
-			button.CallOnClick(WristMenuAPI.Instance2!.m_currentHand.OtherHand);
+			button.CallOnClick(GetCurrentHand().OtherHand);
 		});
 
 		button.CallOnCreate(buttonTransform.gameObject, textComponent);

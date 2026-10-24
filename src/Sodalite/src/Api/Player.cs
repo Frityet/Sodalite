@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using Sodalite.Utilities;
@@ -36,8 +36,13 @@ public static class PlayerAPI
 					break;
 
 				// If the object is a magazine also check if there's another one being palmed
-				case FVRFireArmMagazine magazine when magazine.m_magChild is not null:
-					objects.Add(magazine.m_magChild);
+				case FVRFireArmMagazine magazine:
+#if NATIVEH3VR
+                    var child = magazine.GetMagChild();
+                    if (child) objects.Add(child!);
+#else
+                    if (magazine.m_magChild is not null) objects.Add(magazine.m_magChild);
+#endif
 					break;
 			}
 		}
@@ -45,7 +50,7 @@ public static class PlayerAPI
 		// Get whatever the player is holding
 		if (GM.CurrentMovementManager.Hands[0].CurrentInteractable is FVRPhysicalObject rightObj)
 			AddObject(rightObj);
-		if (GM.CurrentMovementManager.Hands[0].CurrentInteractable is FVRPhysicalObject leftObj)
+		if (GM.CurrentMovementManager.Hands[1].CurrentInteractable is FVRPhysicalObject leftObj)
 			AddObject(leftObj);
 
 		// Iterate over the quickbelt slots on the player
